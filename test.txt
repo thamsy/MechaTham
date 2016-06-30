@@ -1,0 +1,2 @@
+curl -i -H "Acceptn" -X POST --data '{"message": {"chat": {"id": 129847274}}}' "localhost:8080"
+
