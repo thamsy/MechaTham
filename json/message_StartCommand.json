@@ -1,0 +1,13 @@
+{
+	"message": {
+		"text": "/start", 
+		"entities": [
+			{
+				"type": "bot_command"
+			}
+		],
+		"chat": {
+			"id": 129847274
+		}
+	}
+}

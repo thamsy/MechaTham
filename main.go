@@ -30,7 +30,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 			if messageEntity.Type == "bot_command" {
 				message := updateStruct.Message_.Text
 				switch message {
-				case "/help":
+				case "/help", "/start":
 					sendMessageStruct = makeMessage_NoKeyboard(chatId, "Hi I'm MechaTham! Nice to meet you!\n\nTo begin, type one of these commands:\n/indicate - To indicate if you are coming home for dinner tonight\n/status - To view who is currently coming back for dinner")
 				case "/indicate":
 					replyKeyboardMarkup := ReplyKeyboardMarkup{
