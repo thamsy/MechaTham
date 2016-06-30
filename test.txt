@@ -1,2 +1,3 @@
+ -H "Acceptn" -X POST --data '{"message": {"text": "/indicate", "entities":[{"type":"bot_command"}], "chat": {"id": 129847274}}}' "localhost:8080"
 curl -i -H "Acceptn" -X POST --data '{"message": {"chat": {"id": 129847274}}}' "localhost:8080"
 
