@@ -1,0 +1,13 @@
+{
+	"message": {
+		"text": "/indicate", 
+		"entities": [
+			{
+				"type": "bot_command"
+			}
+		],
+		"chat": {
+			"id": 129847274
+		}
+	}
+}
