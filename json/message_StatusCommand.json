@@ -1,6 +1,6 @@
 {
 	"message": {
-		"text": "/No", 
+		"text": "/status", 
 		"entities": [
 			{
 				"type": "bot_command"

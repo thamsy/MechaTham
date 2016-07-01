@@ -1,13 +1,13 @@
 {
 	"message": {
-		"text": "/No", 
+		"text": "/start", 
 		"entities": [
 			{
 				"type": "bot_command"
 			}
 		],
 		"chat": {
-			"id": 129847274
+			"id": 129847275
 		}
 	}
 }
