@@ -16,7 +16,7 @@ const (
 	indicateText   = "Are you coming back for dinner tonight?"
 	yesText        = "Ok, Indicated coming back for dinner"
 	noText         = "Ok, Not coming back for dinner"
-	statusText     = "For today, those having dinner: \n"
+	statusText     = "Having dinner \n\n"
 	notCommandText = "No such command"
 	noCommandText  = "Type a Command to begin or /help for more information."
 )
@@ -47,6 +47,7 @@ func processUpdate(updateStruct *Update, ctx context.Context) interface{} {
 						KeyboardButton{Text: "/No"},
 					},
 				},
+				Resize_keyboard:   true,
 				One_time_keyboard: true,
 			}
 			return makeMessage_Keyboard(chatId, indicateText, replyKeyboardMarkup)
@@ -106,15 +107,15 @@ func processUpdate(updateStruct *Update, ctx context.Context) interface{} {
 				y1, m1, d1 := ds.Date.In(loc).Date()
 				y2, m2, d2 := today.Date()
 				if err2 == datastore.Done || (y1 != y2 || m1 != m2 || d1 != d2) {
-					statuses += fm.Name + ": " + "Have Not Replied\n"
+					statuses += fm.Name + " - " + "Have Not Replied\n"
 				} else {
 					var coming string
 					if ds.Coming {
-						coming = "Coming"
+						coming = "Yes"
 					} else {
-						coming = "Not Coming"
+						coming = "No"
 					}
-					statuses += fm.Name + ": " + coming
+					statuses += fm.Name + " - " + coming
 				}
 			}
 			return makeMessage_NoKeyboard(chatId, statusText+statuses)
