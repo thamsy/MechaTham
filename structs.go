@@ -10,14 +10,16 @@ type Update struct {
 
 // - Send to Bot API
 type SendMessage_NoKeyboard struct {
-	Chat_id int    `json:"chat_id"`
-	Text    string `json:"text"`
-	Method  string `json:"method"`
+	Chat_id    int    `json:"chat_id"`
+	Text       string `json:"text"`
+	Parse_mode string `json:"parse_mode"`
+	Method     string `json:"method"`
 }
 
 type SendMessage_Keyboard struct {
 	Chat_id      int                 `json:"chat_id"`
 	Text         string              `json:"text"`
+	Parse_mode   string              `json:"parse_mode"`
 	Method       string              `json:"method"`
 	Reply_markup ReplyKeyboardMarkup `json:"reply_markup"`
 }

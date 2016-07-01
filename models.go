@@ -6,7 +6,9 @@ import (
 
 type FamilyMember struct {
 	Name     string
+	Id       int
 	BornYear int
+	Schedule bool
 }
 
 type DinnerStatus struct {

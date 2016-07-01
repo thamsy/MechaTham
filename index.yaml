@@ -14,3 +14,9 @@ indexes:
   ancestor: yes
   properties:
   - name: Date
+
+- kind: DinnerStatus
+  ancestor: yes
+  properties:
+  - name: Date
+    direction: desc
