@@ -12,7 +12,10 @@ Built on golang and GAE.
 - [X] UI commands
 
 ### Golang API
+- [X] Restrict Access to Non-Family Members 
+- [ ] Remove Keyboard completely after YES or NO
 - [ ] Set Timing to ask for dinner
+- [ ] Able to request participants to reply
 - [ ] Save information into datastore
 - [ ] Refactor Code (still thinking how to make neat)
 

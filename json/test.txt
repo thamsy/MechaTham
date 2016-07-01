@@ -4,3 +4,4 @@ http POST :8080 < /opt/go_appengine/gopath/src/mechatham_api/json/message_NoComm
 http POST :8080 < /opt/go_appengine/gopath/src/mechatham_api/json/message_HelpCommand.json
 http POST :8080 < /opt/go_appengine/gopath/src/mechatham_api/json/message_IndicateCommand.json
 http POST :8080 < /opt/go_appengine/gopath/src/mechatham_api/json/message_StartCommand.json
+http POST :8080 < /opt/go_appengine/gopath/src/mechatham_api/json/message_WrongId.json

@@ -1,6 +1,6 @@
 {
 	"message": {
-		"text": "/No", 
+		"text": "/Yes", 
 		"entities": [
 			{
 				"type": "bot_command"
