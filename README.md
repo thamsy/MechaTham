@@ -13,11 +13,11 @@ Built on golang and GAE.
 
 ### Golang API
 - [X] Restrict Access to Non-Family Members 
-- [ ] Remove Keyboard completely after YES or NO
 - [ ] Set Timing to ask for dinner
-- [ ] Able to request participants to reply
-- [ ] Save information into datastore
-- [ ] Refactor Code (still thinking how to make neat)
+- [X] Able to request participants to reply
+- [ ] Able to ask individual participants to reply
+- [X] Save information into datastore
+- [X] Refactor Code (still thinking how to make neat)
 
 ### Future Plans
 - [ ] Add a Calendar option
