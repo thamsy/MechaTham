@@ -17,11 +17,11 @@ type SendMessage_NoKeyboard struct {
 }
 
 type SendMessage_Keyboard struct {
-	Chat_id      int                 `json:"chat_id"`
-	Text         string              `json:"text"`
-	Parse_mode   string              `json:"parse_mode"`
-	Method       string              `json:"method"`
-	Reply_markup ReplyKeyboardMarkup `json:"reply_markup"`
+	Chat_id      int         `json:"chat_id"`
+	Text         string      `json:"text"`
+	Parse_mode   string      `json:"parse_mode"`
+	Method       string      `json:"method"`
+	Reply_markup interface{} `json:"reply_markup"`
 }
 
 // -- Other Usual structs
@@ -73,4 +73,8 @@ type KeyboardButton struct {
 	Text             string `json:"text"`
 	Request_contact  bool   `json:"request_contact"`
 	Request_location bool   `json:"request_location"`
+}
+
+type ReplyKeyboardHide struct {
+	Hide_keyboard bool `json:"hide_keyboard"`
 }

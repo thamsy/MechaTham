@@ -9,8 +9,8 @@ import (
 )
 
 func init() {
-	http.HandleFunc("/" /* + BOTTOKEN*/, rootHandler)
-	http.HandleFunc("/init" /* + BOTTOKEN*/, initMem)
+	http.HandleFunc("/"+BOTTOKEN, rootHandler)
+	http.HandleFunc("/"+BOTTOKEN+"/init", initMem)
 	//http.ListenAndServe(":8080", nil)
 }
 

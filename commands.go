@@ -60,10 +60,10 @@ func processUpdate(updateStruct *Update, ctx context.Context) interface{} {
 			return makeMessage_Keyboard(chatId, indicateText, replyKeyboardMarkup)
 		case "/Yes":
 			yesOrNo(ctx, famKey, true)
-			return makeMessage_NoKeyboard(chatId, yesText)
+			return makeMessage_Keyboard(chatId, yesText, ReplyKeyboardHide{true})
 		case "/No":
 			yesOrNo(ctx, famKey, false)
-			return makeMessage_NoKeyboard(chatId, noText)
+			return makeMessage_Keyboard(chatId, noText, ReplyKeyboardHide{true})
 		case "/status":
 			statuses := status(ctx)
 			return makeMessage_NoKeyboard(chatId, statusText+statuses)
@@ -158,6 +158,10 @@ func yesOrNo(ctx context.Context, famKey *datastore.Key, option bool) {
 	}
 }
 
+func hideKeyboard(chatId int) {
+
+}
+
 func status(ctx context.Context) string {
 	var statuses string
 	q := datastore.NewQuery("FamilyMember").Order("BornYear")
@@ -180,9 +184,9 @@ func status(ctx context.Context) string {
 		} else {
 			var coming string
 			if ds.Coming {
-				coming = "Yes"
+				coming = "Yes\n"
 			} else {
-				coming = "No"
+				coming = "No\n"
 			}
 			statuses += fm.Name + " - " + coming
 		}
@@ -202,7 +206,7 @@ func makeMessage_NoKeyboard(chatId int, reply string) SendMessage_NoKeyboard {
 	}
 }
 
-func makeMessage_Keyboard(chatId int, reply string, replyKeyboardMarkup ReplyKeyboardMarkup) SendMessage_Keyboard {
+func makeMessage_Keyboard(chatId int, reply string, replyKeyboardMarkup interface{}) SendMessage_Keyboard {
 	return SendMessage_Keyboard{
 		Chat_id:      chatId,
 		Text:         reply,
