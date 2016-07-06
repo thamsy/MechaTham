@@ -1,7 +1,7 @@
 //I used secret.go as my file name, but because they are all of the same package
 //it doesn't really matter
 
-package main
+package shouldBeMain
 
 import (
 	"golang.org/x/net/context"
