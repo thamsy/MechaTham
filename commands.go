@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+// CONSTANTS
 var loc, _ = time.LoadLocation("Asia/Singapore")
 
 const (
@@ -75,7 +76,7 @@ func processUpdate(updateStruct *Update, ctx context.Context) interface{} {
 	}
 }
 
-// Command functions
+// COMMAND FUNCTIONS
 /*
 func initSchedule(ctx context.Context, famMem FamilyMember, chatId int) {
 	now := time.Now().In(loc)
@@ -92,6 +93,8 @@ func initSchedule(ctx context.Context, famMem FamilyMember, chatId int) {
 	}()
 }
 */
+
+// Sends a message to all family members who hasn't indicated dinner status
 func informAll(ctx context.Context) error {
 	q := datastore.NewQuery("FamilyMember").Order("BornYear")
 	t := q.Run(ctx)
@@ -100,7 +103,9 @@ func informAll(ctx context.Context) error {
 		key, err := t.Next(&fm)
 		if err == datastore.Done {
 			break
-		}
+		} /*else if fm.DisableNotifTil.After(time.Now().In(loc)) {
+			continue
+		}*/
 		q2 := datastore.NewQuery("DinnerStatus").Ancestor(key).Order("-Date")
 		t2 := q2.Run(ctx)
 		var ds DinnerStatus
@@ -126,6 +131,7 @@ func informAll(ctx context.Context) error {
 	return nil
 }
 
+// Creates a Keyboard with /Yes and /No
 func indicate() ReplyKeyboardMarkup {
 	return ReplyKeyboardMarkup{
 		Keyboard: [][]KeyboardButton{
@@ -139,6 +145,7 @@ func indicate() ReplyKeyboardMarkup {
 	}
 }
 
+// Stores dinner status
 func yesOrNo(ctx context.Context, famKey *datastore.Key, option bool) {
 	q := datastore.NewQuery("DinnerStatus").Ancestor(famKey).Order("-Date")
 	t := q.Run(ctx)
@@ -158,10 +165,7 @@ func yesOrNo(ctx context.Context, famKey *datastore.Key, option bool) {
 	}
 }
 
-func hideKeyboard(chatId int) {
-
-}
-
+// Displays dinner status of all family members
 func status(ctx context.Context) string {
 	var statuses string
 	q := datastore.NewQuery("FamilyMember").Order("BornYear")
@@ -179,29 +183,40 @@ func status(ctx context.Context) string {
 		today := time.Now().In(loc)
 		y1, m1, d1 := ds.Date.In(loc).Date()
 		y2, m2, d2 := today.Date()
-		if err2 == datastore.Done || (y1 != y2 || m1 != m2 || d1 != d2) {
-			statuses += fm.Name + " - " + "*Have Not Replied*\n"
+
+		// Determine status
+		var coming string
+		/*if fm.DisableNotifTil.After(today) {
+			coming = "Disabled"
+		} else*/if err2 == datastore.Done || (y1 != y2 || m1 != m2 || d1 != d2) {
+			coming = "*Have Not Replied*"
 		} else {
-			var coming string
 			if ds.Coming {
-				coming = "Yes\n"
+				coming = "Yes"
 			} else {
-				coming = "No\n"
+				coming = "No"
 			}
-			statuses += fm.Name + " - " + coming
 		}
+		statuses += fm.Name + " - " + coming + "\n"
 	}
 	return statuses
 }
 
-// Make Messages
-const sendMessageMethod = "sendMessage"
+/*func disableNotif(famMem *FamilyMember, famKey *datastore.Key) {
+
+}*/
+
+// MESSAGE OUTLINES
+const (
+	sendMessageMethod = "sendMessage"
+	parseModeMarkdown = "Markdown"
+)
 
 func makeMessage_NoKeyboard(chatId int, reply string) SendMessage_NoKeyboard {
 	return SendMessage_NoKeyboard{
 		Chat_id:    chatId,
 		Text:       reply,
-		Parse_mode: "Markdown",
+		Parse_mode: parseModeMarkdown,
 		Method:     sendMessageMethod,
 	}
 }
@@ -210,7 +225,7 @@ func makeMessage_Keyboard(chatId int, reply string, replyKeyboardMarkup interfac
 	return SendMessage_Keyboard{
 		Chat_id:      chatId,
 		Text:         reply,
-		Parse_mode:   "Markdown",
+		Parse_mode:   parseModeMarkdown,
 		Method:       sendMessageMethod,
 		Reply_markup: replyKeyboardMarkup,
 	}

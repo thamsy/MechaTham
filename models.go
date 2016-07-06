@@ -5,10 +5,10 @@ import (
 )
 
 type FamilyMember struct {
-	Name     string
-	Id       int
-	BornYear int
-	Schedule bool
+	Name            string
+	Id              int
+	BornYear        int
+	DisableNotifTil time.Time
 }
 
 type DinnerStatus struct {

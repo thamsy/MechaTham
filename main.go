@@ -40,6 +40,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 func initMem(w http.ResponseWriter, r *http.Request) {
 	//Initialize Family Members - Puts into the datastore, telegram_id and member_name
+	//@see secret_template.go
 	ctx := appengine.NewContext(r)
 	err := initializeMembers(ctx)
 	if err != nil {
