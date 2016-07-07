@@ -18,15 +18,21 @@ const (
 		"\n\nTo begin, type one of these commands:" +
 		"\n/indicate - To indicate if you are coming home for dinner tonight" +
 		"\n/status - To view who is currently coming back for dinner" +
-		"\n/inform - Sends a notification to all those who haven't replied"
-	indicateText   = "Are you coming back for dinner tonight?"
-	yesText        = "Ok, Indicated coming back for dinner"
-	noText         = "Ok, Not coming back for dinner"
-	statusText     = "Having dinner: \n\n"
-	notCommandText = "No such command"
-	noCommandText  = "Type a Command to begin or /help for more information."
-	informText     = "Informed"
-	errorText      = "Sorry, an Error has occured"
+		"\n/inform - Sends a notification to all those who haven't replied" +
+		"\n/remark - Add a Remark to your Dinner status" +
+		"\n/cancel - Cancel current operation"
+	indicateText      = "Are you coming back for dinner tonight?"
+	yesText           = "Ok, Coming Back. Use /remark to add a remark."
+	noText            = "Ok, Not Coming Back. Use /remark to add a remark."
+	startRemarkText   = "Please type and add your remark, it will be displayed in /status"
+	indicateFirstText = "Please indicate if you're coming back for dinner first"
+	savedRemarkText   = "Remark saved! View with /status"
+	statusText        = "Having dinner: \n\n"
+	notCommandText    = "No such command"
+	noCommandText     = "Type a Command to begin or /help for more information."
+	informText        = "Informed"
+	cancelText        = "Current Command cancelled. Type /help for all commands."
+	errorText         = "Sorry, an Error has occured"
 )
 
 func processUpdate(updateStruct *Update, ctx context.Context) interface{} {
@@ -40,10 +46,28 @@ func processUpdate(updateStruct *Update, ctx context.Context) interface{} {
 	if err == datastore.ErrNoSuchEntity {
 		return makeMessage_NoKeyboard(chatId, "Still in Development")
 	}
+	memPrevComm := famMem.PrevCommand
+	message := updateStruct.Message_.Text
 
 	// Check for commands
-	if messageEntities != nil && messageEntities[0].Type == "bot_command" {
-		message := updateStruct.Message_.Text
+	if message == "/cancel" {
+		setCurrCommand(ctx, famKey, &famMem, "")
+		return makeMessage_Keyboard(chatId, cancelText, ReplyKeyboardHide{true})
+	} else if memPrevComm != "" {
+		switch memPrevComm {
+		case "/remark":
+			success := saveRemark(ctx, famKey, message)
+			if !success { // Defensive coding
+				setCurrCommand(ctx, famKey, &famMem, "")
+				return makeMessage_Keyboard(chatId, indicateFirstText, indicate())
+			} else {
+				setCurrCommand(ctx, famKey, &famMem, "")
+				return makeMessage_NoKeyboard(chatId, savedRemarkText)
+			}
+		default:
+			return makeMessage_NoKeyboard(chatId, errorText)
+		}
+	} else if messageEntities != nil && messageEntities[0].Type == "bot_command" {
 		switch message {
 		case "/start":
 			//initSchedule(ctx, famMem, chatId)
@@ -65,6 +89,14 @@ func processUpdate(updateStruct *Update, ctx context.Context) interface{} {
 		case "/No":
 			yesOrNo(ctx, famKey, false)
 			return makeMessage_Keyboard(chatId, noText, ReplyKeyboardHide{true})
+		case "/remark":
+			success := saveRemark(ctx, famKey, "")
+			if success {
+				setCurrCommand(ctx, famKey, &famMem, message)
+				return makeMessage_NoKeyboard(chatId, startRemarkText)
+			} else {
+				return makeMessage_Keyboard(chatId, indicateFirstText, indicate())
+			}
 		case "/status":
 			statuses := status(ctx)
 			return makeMessage_NoKeyboard(chatId, statusText+statuses)
@@ -165,6 +197,31 @@ func yesOrNo(ctx context.Context, famKey *datastore.Key, option bool) {
 	}
 }
 
+// Stores Current command
+func setCurrCommand(ctx context.Context, famKey *datastore.Key, famMem *FamilyMember, message string) {
+	famMem.PrevCommand = message
+	datastore.Put(ctx, famKey, famMem)
+}
+
+// Save Remark
+func saveRemark(ctx context.Context, famKey *datastore.Key, remark string) bool {
+	q := datastore.NewQuery("DinnerStatus").Ancestor(famKey).Order("-Date")
+	t := q.Run(ctx)
+	var ds DinnerStatus
+	key, err := t.Next(&ds)
+	today := time.Now().In(loc)
+	y1, m1, d1 := ds.Date.In(loc).Date()
+	y2, m2, d2 := today.Date()
+	if err == datastore.Done || (y1 != y2 || m1 != m2 || d1 != d2) {
+		return false
+	} else {
+		ds.Remark = remark
+		datastore.Put(ctx, key, &ds)
+		return true
+	}
+
+}
+
 // Displays dinner status of all family members
 func status(ctx context.Context) string {
 	var statuses string
@@ -186,6 +243,7 @@ func status(ctx context.Context) string {
 
 		// Determine status
 		var coming string
+		remark := ""
 		/*if fm.DisableNotifTil.After(today) {
 			coming = "Disabled"
 		} else*/if err2 == datastore.Done || (y1 != y2 || m1 != m2 || d1 != d2) {
@@ -196,8 +254,12 @@ func status(ctx context.Context) string {
 			} else {
 				coming = "No"
 			}
+
+			if ds.Remark != "" {
+				remark = "\n_" + ds.Remark + "_"
+			}
 		}
-		statuses += fm.Name + " - " + coming + "\n"
+		statuses += fm.Name + " - " + coming + remark + "\n"
 	}
 	return statuses
 }

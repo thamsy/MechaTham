@@ -1,3 +1,5 @@
 indicate - Indicate if you are coming back for dinner
 status - Check Dinner status of the family
 inform - Ask all those how have not replied to reply
+remark - Add a Remark to your Dinner status
+cancel - Cancel current operation

@@ -1,6 +1,6 @@
 package main
 
-// Json Objects
+// JSON OBJECTS
 // - Receive from Bot API
 type Update struct {
 	Update_id      int     `json:"update_id"`

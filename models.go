@@ -9,9 +9,11 @@ type FamilyMember struct {
 	Id              int
 	BornYear        int
 	DisableNotifTil time.Time
+	PrevCommand     string
 }
 
 type DinnerStatus struct {
 	Date   time.Time
 	Coming bool
+	Remark string
 }
