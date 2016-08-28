@@ -5,7 +5,7 @@ Built on golang and GAE. This is the server for a telegram bot for my family. It
 The interface is not extremely intuitive but is guided. More functionalities are pending.
 
 ## Fundamentals Checklist
-- [X] glide (go package manager)
+nil
 
 ## Features Checklist
 
